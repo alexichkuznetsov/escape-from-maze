@@ -98,10 +98,17 @@ function createPiece() {
     });
   };
 
+  // let isPieceOut = () => {
+  //   return (
+  //     pieceElement.style.top === '450px' && pieceElement.style.left === '0px'
+  //   );
+  // };
+
+  /**
+   * Checkout README.md for additional info
+   */
   let isPieceOut = () => {
-    return (
-      pieceElement.style.top === '450px' && pieceElement.style.left === '0px'
-    );
+    return position.left * 50 === 0 && position.top * 50 === 450;
   };
 
   let direction = Math.floor(Math.random() * directionNames.length);
@@ -203,11 +210,28 @@ function resetField() {
 
 function escapePlan() {
   const piece = createPiece();
-  // piece.isThereWay();
-  // piece.goForward();
-  // piece.turnRight();
-  // piece.turnLeft();
-  // piece.amIFree();
+
+  let method = 'turnRight',
+    count;
+
+  while (!piece.amIFree()) {
+    if (piece.isThereWay()) {
+      piece.goForward();
+    } else {
+      count = 0;
+
+      while (!piece.isThereWay()) {
+        piece[method]();
+        count++;
+      }
+
+      if (count === 2) {
+        piece[method]();
+
+        method = 'turnLeft';
+      }
+    }
+  }
 }
 
 function main() {
